@@ -4,6 +4,7 @@ from functools import wraps
 from requests import Timeout, ConnectionError
 from socket import timeout as socket_timeout
 import logging
+from .models import ArbitraryAccessObject
 
 
 timeouts = (Timeout, socket_timeout, ConnectionError)
@@ -21,7 +22,9 @@ def threading_lock(lock):
     return decorator
 
 
-def retry_connect(retry_times, timeout):
+def retry_connect(retry_times, timeout, error=None):
+    if error is None:
+        error=ArbitraryAccessObject()
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
