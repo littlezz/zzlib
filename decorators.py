@@ -5,7 +5,7 @@ from requests import Timeout, ConnectionError
 from socket import timeout as socket_timeout
 import logging
 from .models import ArbitraryAccessObject
-
+from shutil import get_terminal_size
 
 timeouts = (Timeout, socket_timeout, ConnectionError)
 
@@ -25,6 +25,7 @@ def threading_lock(lock):
 def retry_connect(retry_times, timeout, error=None):
     if error is None:
         error=ArbitraryAccessObject()
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -39,6 +40,7 @@ def retry_connect(retry_times, timeout, error=None):
 
                 except timeouts:
                     try_times += 1
+                    error.reconnect(try_times)
 
                 else:
                     return ret
@@ -90,3 +92,12 @@ def resolve_timeout(replace_value):
                 return replace_value
         return wrapper
     return decorator
+
+
+def clear_output(func):
+    terminal_width, _ = get_terminal_size()
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        print(' ' * terminal_width, end='\r')
+        return func(*args, **kwargs)
+    return wrapper

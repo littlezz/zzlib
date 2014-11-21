@@ -1,7 +1,6 @@
 __author__ = 'zz'
 
 
-
 class ArbitraryAccessObject:
     """
       可以访问但是什么也不做的类.
