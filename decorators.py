@@ -1,4 +1,4 @@
-__author__ = 'zz'
+import os
 
 from functools import wraps
 from requests import Timeout, ConnectionError
@@ -9,7 +9,7 @@ from shutil import get_terminal_size
 
 timeouts = (Timeout, socket_timeout, ConnectionError)
 
-
+__author__ = 'zz'
 
 
 def threading_lock(lock):
@@ -101,3 +101,15 @@ def clear_output(func):
         print(' ' * terminal_width, end='\r')
         return func(*args, **kwargs)
     return wrapper
+
+
+def prepare_dir(dirname):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            if not os.path.exists(dirname):
+                os.mkdir(dirname)
+
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
