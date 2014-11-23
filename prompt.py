@@ -8,13 +8,13 @@ __author__ = 'zz'
 
 
 class Error:
-    error_lock = threading.Lock()
+    _error_lock = threading.Lock()
 
     def __init__(self, connect_fail_prompt_bound=3):
         self._connect_fail = 0
         self.connect_fail_prompt_bound = connect_fail_prompt_bound
 
-    @threading_lock(error_lock)
+    @threading_lock(_error_lock)
     @clear_output
     def reconnect(self, try_times):
         print('连接断开,正在尝试第{}次重连'.format(try_times))
