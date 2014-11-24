@@ -7,7 +7,7 @@ class SafeString:
     """
     sanitize string
     """
-    _dirname_pat = re.compile('\?*\\*\.*<*>*/*\|*')
+    _dirname_pat = re.compile(r'\?*\\*\.*<*>*/*\|*')
 
     def sanitized_dirname(self, value, replace_by=''):
         """replace unsafe char with 'replace_by'
