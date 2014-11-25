@@ -1,5 +1,4 @@
 import os
-
 from functools import wraps
 from requests import Timeout, ConnectionError
 from socket import timeout as socket_timeout
@@ -24,7 +23,7 @@ def threading_lock(lock):
 
 def retry_connect(retry_times, timeout, error=None):
     if error is None:
-        error=ArbitraryAccessObject()
+        error = ArbitraryAccessObject()
 
     def decorator(func):
         @wraps(func)
@@ -52,20 +51,14 @@ def retry_connect(retry_times, timeout, error=None):
     return decorator
 
 
-def semalock_for_class(func):
-    @wraps(func)
-    def wrapper(self, s, *args, **kwargs):
-        with s:
-            return func(self, *args, **kwargs)
-    return wrapper
-
-
-def semalock(func):
-    @wraps(func)
-    def wrapper(s, *args, **kwargs):
-        with s:
-            return func(*args, **kwargs)
-    return wrapper
+def semalock(s):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            with s:
+                return func(*args, **kwargs)
+        return wrapper
+    return decorator
 
 
 def loop(func):
@@ -96,6 +89,7 @@ def resolve_timeout(replace_value):
 
 def clear_output(func):
     terminal_width, _ = get_terminal_size()
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         print(' ' * terminal_width, end='\r')
