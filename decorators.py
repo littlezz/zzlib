@@ -34,8 +34,6 @@ def retry_connect(retry_times, timeout, error=None):
                     ret = func(*args, timeout=timeout, **kwargs)
                     if ret.status_code != 200:
                         logging.warning('%s is %s', ret.url, ret.status_code)
-                        if ret.status_code == 404:
-                            raise Timeout
 
                 except timeouts:
                     try_times += 1
